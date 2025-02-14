@@ -3,6 +3,7 @@ let currentRecipe = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   loadRecipes();
+  initViewMode();
 });
 
 document.getElementById('recipe-form').addEventListener('submit', async function(e) {
@@ -174,4 +175,43 @@ function showToast(message, type = 'info') {
   document.body.appendChild(toast);
   new bootstrap.Toast(toast, { autohide: true, delay: 3000 }).show();
   setTimeout(() => toast.remove(), 3500);
+}
+
+// 新增视图切换功能
+function toggleViewMode(mode) {
+  const list = document.getElementById('recipe-list');
+  list.classList.remove('view-grid', 'view-list');
+  list.classList.add(`view-${mode}`);
+  
+  // 保存用户偏好
+  localStorage.setItem('recipeViewMode', mode);
+}
+
+// 初始化视图模式
+function initViewMode() {
+  const savedMode = localStorage.getItem('recipeViewMode') || 'grid';
+  toggleViewMode(savedMode);
+}
+
+// 新增直接收藏功能
+async function addToFavoritesDirect(recipeId) {
+  const btn = event.currentTarget;
+  btn.disabled = true;
+  
+  try {
+    const res = await fetch('/api/favorites', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recipeId })
+    });
+    
+    if (res.ok) {
+      btn.innerHTML = `<i class="bi bi-heart-fill"></i>`;
+      showToast('已加入收藏', 'success');
+    }
+  } catch (error) {
+    showToast('收藏失败', 'danger');
+  } finally {
+    btn.disabled = false;
+  }
 }
