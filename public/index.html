@@ -1,0 +1,217 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipe Sharing Website</title>
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 新增固定导航栏 -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-primary" href="#">🍳 RecipeHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#recipesSection">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#upload-recipe">Upload Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showFavorites()">My Collections</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 修改后的Hero Section -->
+  <section class="hero-section mb-5 pt-5">
+    <div class="container pt-5">
+      <div class="row align-items-center">
+        <div class="col-md-6 hero-text">
+          <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">
+            <span class="text-primary">探索</span>全球美食
+            <span class="text-success">分享</span>烹饪灵感
+          </h1>
+          <p class="lead mt-3">
+            <strong>Explore our huge selection of delicious recipe ideas including easy desserts,
+            vegan and vegetarian dinner ideas, gorgeous pasta recipes, quick bakes,
+            family-friendly meals and gluten-free recipes.</strong>
+          </p>
+          <!-- Search & Filter Buttons -->
+          <div class="mt-4 d-flex gap-2">
+            <input type="text" id="searchInput" class="form-control w-50" placeholder="Search recipes...">
+            <button class="btn btn-primary" id="filterBtn">Search</button>
+          </div>
+        </div>
+        <!-- 恢复图片展示 -->
+        <div class="col-md-6 text-center hero-image d-none d-md-block">
+          <div class="image-container position-relative">
+            <img src="https://cafedelites.com/wp-content/uploads/2018/04/Best-Kung-Pao-Chicken-IMAGE-2.jpg" 
+                alt="Hero" class="img-fluid rounded-3 shadow-lg">
+            <div class="badge-overlay bg-danger text-white px-3 py-2 rounded-pill">
+              Today's Special：Kung Pao Chicken
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter controls (cuisine/difficulty) -->
+  <section class="container mb-5">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="cuisineFilter" class="form-label fw-bold">Cuisine Filter</label>
+        <select id="cuisineFilter" class="form-select">
+          <option value="">All Cuisines</option>
+          <option value="Italian">Italian</option>
+          <option value="Chinese">Chinese</option>
+          <option value="Indian">Indian</option>
+          <option value="Thai">Thai</option>
+          <option value="Mexican">Mexican</option>
+          <option value="American">American</option>
+          <option value="French">French</option>
+          <option value="Japanese">Japanese</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="difficultyFilter" class="form-label fw-bold">Difficulty Filter</label>
+        <select id="difficultyFilter" class="form-select">
+          <option value="">All Difficulties</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Categories -->
+  <section class="categories py-4 mb-5">
+    <div class="container">
+      <h2 class="mb-3">Popular Cuisines</h2>
+      <div class="d-flex flex-row flex-nowrap overflow-auto gap-3">
+        <button class="btn btn-outline-primary" onclick="setCuisineFilter('Thai')">Thai</button>
+        <button class="btn btn-outline-primary" onclick="setCuisineFilter('American')">American</button>
+        <button class="btn btn-outline-primary" onclick="setCuisineFilter('Chinese')">Chinese</button>
+        <button class="btn btn-outline-primary" onclick="setCuisineFilter('Mexican')">Mexican</button>
+        <button class="btn btn-outline-primary" onclick="setCuisineFilter('Indian')">Indian</button>
+        <button class="btn btn-outline-primary" onclick="setCuisineFilter('Italian')">Italian</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Recipes -->
+  <section id="recipesSection" class="latest-recipes mb-5">
+    <div class="container">
+        <h2 class="mb-3">Latest Recipes</h2>
+        <div id="recipe-list" class="row row-cols-1 row-cols-md-3 g-4">
+            <!-- Dynamically inserted recipes -->
+        </div>
+    </div>
+</section>
+
+  <!-- Upload Recipe Form -->
+  <section class="upload-recipe mb-5">
+    <div class="container">
+      <div class="card">
+        <div class="card-header">Upload Your Recipe</div>
+        <div class="card-body">
+          <form id="recipe-form">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="title" class="form-label">Recipe Title</label>
+                <input type="text" id="title" class="form-control" placeholder="e.g. Chocolate Cake" required>
+              </div>
+              <div class="col-md-6">
+                <label for="cuisine" class="form-label">Cuisine Origin </label>
+                <input type="text" id="cuisine" class="form-control" placeholder="e.g. American">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="ingredients" class="form-label">Ingredients</label>
+                <textarea id="ingredients" class="form-control" rows="2" placeholder="comma separated" required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label for="steps" class="form-label">Steps</label>
+                <textarea id="steps" class="form-control" rows="2" placeholder="one step per line" required></textarea>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="image" class="form-label">Image URL</label>
+                <input type="text" id="image" class="form-control" placeholder="http://...">
+              </div>
+              <div class="col-md-6">
+                <label for="difficulty" class="form-label">Difficulty</label>
+                <select id="difficulty" class="form-select">
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+            </div>
+            <!-- Simulate user_id -->
+            <input type="hidden" id="user_id" value="user123">
+            <button type="submit" class="btn btn-success">Submit Recipe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal for Recipe Details -->
+  <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="recipeModalLabel">Recipe Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="recipeDetails">
+          <!-- Populated by script.js -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="addFavoriteBtn">Add to Favorites</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script src="script.js"></script>
+
+  <!-- 修改后的页脚 -->
+  <footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>关于我们</h5>
+          <p class="text-muted">分享美食，传递快乐</p>
+        </div>
+        <div class="col-md-6 text-end">
+          <p class="mb-0">
+            © 2025 RecipeHub · 
+            <a href="#" class="text-white text-decoration-none">隐私政策</a> · 
+            <a href="#" class="text-white text-decoration-none">使用条款</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
